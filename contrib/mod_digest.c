@@ -28,7 +28,7 @@
 
 #include "conf.h"
 
-#define MOD_DIGEST_VERSION      "mod_digest/2.0.0"
+#define MOD_DIGEST_VERSION      "mod_digest/2.0.0.p"
 
 /* Define the custom commands/responses used. */
 #ifndef C_HASH
@@ -1814,7 +1814,9 @@ static void digest_progress_cb(const char *path, off_t remaining) {
   /* AND write something on the control connection, to prevent any middleboxes
    * from timing out the session.
    */
-  pr_response_add(R_DUP, _("Computing..."));
+  // pr_response_add(R_DUP, _("Computing..."));
+  pr_log_debug(DEBUG8, MOD_DIGEST_VERSION
+    ": Computing...");
 }
 
 static modret_t *digest_xcmd(cmd_rec *cmd, unsigned long algo) {
@@ -1964,7 +1966,10 @@ static modret_t *digest_xcmd(cmd_rec *cmd, unsigned long algo) {
     if (get_algo_md(algo) != NULL) {
       char *hex_digest;
 
-      pr_response_add(R_250, _("Computing %s digest"), get_algo_name(algo, 0));
+      // pr_response_add(R_250, _("Computing %s digest"), get_algo_name(algo, 0));
+      pr_log_debug(DEBUG8, MOD_DIGEST_VERSION
+        ": Computing %s digest", get_algo_name(algo, 0));
+      
       hex_digest = get_digest(cmd, algo, path, st.st_mtime, start_pos, len,
         PR_STR_FL_HEX_USE_UC, digest_progress_cb);
       if (hex_digest != NULL) {
@@ -2083,8 +2088,10 @@ MODRET digest_hash(cmd_rec *cmd) {
   pr_trace_msg(trace_channel, 14, "%s: using %s algorithm on path '%s'",
     (char *) cmd->argv[0], get_algo_name(digest_hash_algo, 0), path);
 
-  pr_response_add(R_213, _("Computing %s digest"),
-    get_algo_name(digest_hash_algo, DIGEST_ALGO_FL_IANA_STYLE));
+  // pr_response_add(R_213, _("Computing %s digest"),
+  //   get_algo_name(digest_hash_algo, DIGEST_ALGO_FL_IANA_STYLE));
+  pr_log_debug(DEBUG8, MOD_DIGEST_VERSION
+    ": Computing %s digest", get_algo_name(digest_hash_algo, DIGEST_ALGO_FL_IANA_STYLE));
   hex_digest = get_digest(cmd, digest_hash_algo, path, st.st_mtime, start_pos,
     len, PR_STR_FL_HEX_USE_LC, digest_progress_cb);
   xerrno = errno;
@@ -2667,7 +2674,9 @@ MODRET digest_md5(cmd_rec *cmd) {
   pr_trace_msg(trace_channel, 14, "%s: using %s algorithm on path '%s'",
     (char *) cmd->argv[0], get_algo_name(algo, 0), path);
 
-  pr_response_add(R_251, _("Computing %s digest"), get_algo_name(algo, 0));
+  // pr_response_add(R_251, _("Computing %s digest"), get_algo_name(algo, 0));
+  pr_log_debug(DEBUG8, MOD_DIGEST_VERSION
+    ": Computing %s digest", get_algo_name(algo, 0));
   hex_digest = get_digest(cmd, algo, path, st.st_mtime, start_pos,
     len, PR_STR_FL_HEX_USE_UC, digest_progress_cb);
   xerrno = errno;
