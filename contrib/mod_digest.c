@@ -1973,7 +1973,7 @@ static modret_t *digest_xcmd(cmd_rec *cmd, unsigned long algo) {
       hex_digest = get_digest(cmd, algo, path, st.st_mtime, start_pos, len,
         PR_STR_FL_HEX_USE_UC, digest_progress_cb);
       if (hex_digest != NULL) {
-        pr_response_add(R_DUP, "%s", hex_digest);
+        pr_response_add(R_250, "%s", hex_digest);
         return PR_HANDLED(cmd);
       }
 
@@ -2097,7 +2097,7 @@ MODRET digest_hash(cmd_rec *cmd) {
   xerrno = errno;
 
   if (hex_digest != NULL) {
-    pr_response_add(R_DUP, "%s %" PR_LU "-%" PR_LU " %s %s",
+    pr_response_add(R_213, "%s %" PR_LU "-%" PR_LU " %s %s",
       get_algo_name(digest_hash_algo, DIGEST_ALGO_FL_IANA_STYLE),
       (pr_off_t) start_pos, (pr_off_t) end_pos, hex_digest, orig_path);
     return PR_HANDLED(cmd);
@@ -2682,7 +2682,7 @@ MODRET digest_md5(cmd_rec *cmd) {
   xerrno = errno;
 
   if (hex_digest != NULL) {
-    pr_response_add(R_DUP, "%s %s", orig_path, hex_digest);
+    pr_response_add(R_251, "%s %s", orig_path, hex_digest);
     return PR_HANDLED(cmd);
   }
 
